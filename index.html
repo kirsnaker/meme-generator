@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Генератор | Если бы ... был ... то он бы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0f1724;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #eef2ff;
+        }
+
+        /* Карточка */
+        .generator-card {
+            max-width: 880px;
+            width: 100%;
+            background: #111827;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(75, 85, 99, 0.3);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* Шапка */
+        .card-header {
+            background: #1e293b;
+            padding: 1.6rem 2rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .card-header h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #c084fc, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-header .sub {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 400;
+            border-left: 3px solid #3b82f6;
+            padding-left: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Основной контент */
+        .card-content {
+            padding: 2rem;
+        }
+
+        /* Поле ввода имени */
+        .field-group {
+            margin-bottom: 2rem;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+        }
+
+        .field-group input {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 0.9rem 1.2rem;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #f1f5f9;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .field-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: #0f172a;
+        }
+
+        /* Выбор профессии (сетка) */
+        .profession-section {
+            margin-bottom: 2rem;
+        }
+
+        .profession-section .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9ca3af;
+            margin-bottom: 0.8rem;
+        }
+
+        .prof-buttons-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+
+        .prof-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: inherit;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .prof-btn:hover {
+            background: #2d3a52;
+            border-color: #5b6e8c;
+            color: white;
+        }
+
+        .prof-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Кнопка генерации */
+        .generate-btn {
+            width: 100%;
+            background: #3b82f6;
+            border: none;
+            border-radius: 1.2rem;
+            padding: 0.9rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .generate-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .generate-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Блок результата */
+        .result-panel {
+            background: #0f172a;
+            border-radius: 1.5rem;
+            border: 1px solid #2d3a52;
+            overflow: hidden;
+        }
+
+        .result-header {
+            background: #1e293b;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #2d3a52;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            word-break: break-word;
+        }
+
+        .intro-text span {
+            color: #facc15;
+            font-weight: 600;
+            background: #1e293b;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.5rem;
+        }
+
+        .points-list {
+            list-style: none;
+            padding: 1.2rem 1.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .points-list li {
+            background: #1a2538;
+            padding: 0.9rem 1.2rem;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            color: #e2e8f0;
+            border-left: 4px solid #3b82f6;
+            transition: 0.1s;
+        }
+
+        .footer-note {
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #5b6e8c;
+            border-top: 1px solid #1e293b;
+            padding-top: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            .card-content {
+                padding: 1.5rem;
+            }
+            .intro-text {
+                font-size: 0.95rem;
+            }
+            .prof-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.75rem;
+            }
+            .points-list li {
+                font-size: 0.85rem;
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="generator-card">
+    <div class="card-header">
+        <h1>Конструктор профессий</h1>
+        <div class="sub">Юмор</div>
+    </div>
+    <div class="card-content">
+        <div class="field-group">
+            <label>имя</label>
+            <input type="text" id="personName" placeholder="например: Хомяк, Сосед, Друг" value="">
+        </div>
+
+        <div class="profession-section">
+            <div class="label">выберите профессию</div>
+            <div class="prof-buttons-grid" id="professionButtonsContainer"></div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">Сгенерировать</button>
+
+        <div class="result-panel">
+            <div class="result-header">
+                <div class="intro-text" id="introPreview">Если бы [имя] был [профессия], то он бы...</div>
+            </div>
+            <ul class="points-list" id="pointsList">
+                <li>нажмите на кнопку, чтобы создать абсурдные сценарии</li>
+            </ul>
+        </div>
+        <div class="footer-note">
+            пункты не повторяются в рамках одной генерации | база данных более 120 уникальных вариантов
+        </div>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // БОЛЬШАЯ БАЗА ДАННЫХ (JSON-стиль) — никаких эмодзи, только текст
+    // --------------------------------------------------------------
+    const jokesDatabase = {
+        "блогер": [
+            "снимал бы распаковку своего утра и плакал от дизлайков",
+            "начал бы челлендж 'не чихать 24 часа' и чихнул на пятой секунде",
+            "выложил бы сторис с капуччино и подписью 'успех близко'",
+            "купил бы фейковых подписчиков, а они оказались ботами-ботаниками",
+            "спорил с хейтерами в комментах до трёх ночи, забыв про ужин",
+            "выпустил бы подкаст 'как я ничего не делаю, но зарабатываю'",
+            "прорекламировал бы сок 'из детства', хотя сам никогда его не пил",
+            "устроил бы разбор полётов своего отражения в тостере",
+            "открыл бы посылку из Aliexpress и картонный чехол назвал бы 'вау'",
+            "устроил бы скандал, чтобы хайпануть, а потом извинился в слезах",
+            "снял бы 'миллионный' ролик с котом, который просто чихнул",
+            "подписал бы бартер: сто бананов за пиар зубной пасты"
+        ],
+        "президент": [
+            "подписал бы указ, что пятница теперь длится четыре дня",
+            "на важной речи забыл бы текст и спел бы гимн в припеве",
+            "обменялся бы рукопожатием с роботом-пылесосом на саммите",
+            "объявил бы, что все налоги теперь платятся анекдотами",
+            "улетел бы в отпуск, оставив записку 'всё под контролем, сам разберусь'",
+            "устроил бы дебаты с кошкой и проиграл",
+            "заявил бы, что интернет теперь передают голуби с вайфаем",
+            "заказал бы пиццу в Кремль с доставкой и не дал чаевые",
+            "подарил бы всем детям страны плюшевых хомяков вместо учебников",
+            "устроил бы селфи с ядерной кнопкой и фильтром 'весна'",
+            "ввёл бы налог на смех, потому что слишком весело",
+            "пообещал бы построить ракету из макарон, но съел материалы",
+            "назначил бы министром юмора случайного подписчика инстаграма"
+        ],
+        "банкир": [
+            "требовал бы проценты даже за воздух в банкомате",
+            "при виде скидки в магазине начинал бы нервно пересчитывать сбережения",
+            "открыл бы вклад 'завтрак': положил бутерброд — через год два бутерброда",
+            "заблокировал бы карту бабушке за слово 'спасибо' (комиссия за вежливость)",
+            "на вопрос 'сколько время?' ответил бы: 'это будет стоить пять долларов консультация'",
+            "штрафовал бы себя за лишнюю минуту сна",
+            "создал бы приложение 'копейка рубль бережёт' с рекламой через каждые пять секунд",
+            "вместо купюр выдавал бы советы по финансовой грамотности",
+            "инвестировал бы в банан, потому что 'жёлтый — цвет золота'",
+            "заставил бы всех клиентов разговаривать с роботом-холодильником",
+            "на вечеринке вместо танцев строил бы график падения биткоина",
+            "потребовал бы вернуть 'эмоциональный кредит' за комплимент",
+            "хранил бы зубочистки в сейфе с тремя замками"
+        ],
+        "директор компании": [
+            "проводил бы планерки в аквапарке, требуя отчёты с горки",
+            "уволил бы кофе-машину за плохой эспрессо",
+            "вместо зарплаты раздавал бы 'фирменные носки с логотипом'",
+            "на совещании требовал синергии с холодильником",
+            "подписал бы контракт с котом на должность 'главный мяукатель'",
+            "внёс корпоративную политику: каждый понедельник — пижамный день",
+            "лучшим сотрудником года назвал бы фикус в кабинете",
+            "ежегодная премия — пять минут хвалить самого себя в рупор",
+            "объяснял бы убытки влиянием магии и фаз луны",
+            "заставлял бы всех приносить справки о настроении из психологической лаборатории",
+            "ввёл бы должность 'идейный хомяк' с зарплатой в семечки",
+            "устраивал бы корпоратив на необитаемом острове, а сам летел бизнес-классом",
+            "запретил бы слово 'дедлайн', заменив на 'весёлый час чудес'"
+        ],
+        "астролог": [
+            "предсказывал бы, что утренний бутерброд упадёт маслом вниз",
+            "смотрел бы на звёзды и говорил: 'сегодня у всех мелкие проблемы'",
+            "объяснял бы ретроградный Меркурий в том, что потерял носки",
+            "заявлял бы, что Луна в Овне — пора покупать хомячка",
+            "вместо гороскопа читал бы состав чипсов",
+            "советовал бы мыть голову только когда Юпитер в Раке",
+            "предупреждал: 'сегодня не надевайте красное, кофе выпьется не так'",
+            "предсказал бы богатство, но с дополнительной услугой за 999 рублей",
+            "верил, что спутники влияют на выбор носков",
+            "по гороскопу кофе надо пить только левой рукой",
+            "на вопрос 'когда любовь?' отвечал бы: 'когда Нептун соединится с твоим тостером'",
+            "использовал бы магический шар ответов, который всегда говорит 'попробуй снова'"
+        ],
+        "диджей": [
+            "скретчил бы звук открывания банки колы на всю улицу",
+            "на свадьбе поставил бы трек 'ария пустой банки'",
+            "свёл бы звук дождя с мявом кота в хит 'mood номер семь'",
+            "на каждый чих дискотеки запускал бы конфетти",
+            "вместо пластинок использовал бы блины и жарил их в паузах",
+            "вырубил бы свет и сказал: 'техно-пауза, заряжаем басы'",
+            "на вопрос 'поставь что-то нормальное' включал бы звук газонокосилки",
+            "устроил бы батл: вертушки против стиральной машинки",
+            "объявил бы конкурс 'кто громче чихнет' и записал сэмпл",
+            "его любимый жанр — 'звук микроволновки под дабстеп'",
+            "терпеть не мог тишину, поэтому спал под белый шум собственных треков"
+        ],
+        "ниндзя": [
+            "пробрался бы на кухню за печеньками — никто не заметил, но печеньки кончились",
+            "сражался бы с комарами, используя технику теневого удара",
+            "вместо сюрикенов метал бы васаби",
+            "на совещании был бы невидимкой, но храпел бы очень громко",
+            "тренировался бы сворачивать туалетную бумагу в оригами-сюрикен",
+            "охотился бы на тапки, которые вечно теряются",
+            "умел бы исчезать прямо во время мытья посуды",
+            "устроил бы битву с пылесосом за территорию ковра",
+            "оставлял бы везде стикеры 'здесь был ниндзя'"
+        ],
+        "супергерой": [
+            "спас бы мир от скуки, устроив всемирный день подушки",
+            "его суперсила — превращать грустные мемы в очень грустные",
+            "главный враг — зарядка на телефоне, которая вечно теряется",
+            "на каждый зов о помощи отвечал: 'сейчас, досмотрю серию'",
+            "сражался бы со злодеем, который крадёт пульты от телевизора",
+            "плащ вечно застревал бы в дверях, злодеи убегали",
+            "спас кота с дерева, а потом залез обратно, потому что испугался высоты",
+            "случайно прожёг бы дыру в диване лазерным взглядом",
+            "тайная ипостась — обычный человек, который вечно ищет носки"
+        ],
+        "олигарх": [
+            "купил бы яхту, но забыл бы про море, катался бы по лужам",
+            "объявил бы, что у него золотой унитаз, а сам ходит в гости к соседу",
+            "коллекционировал бы бриллиантовые ложки и ел бы суп золотыми руками",
+            "гонял бы по городу на танке, потому что джип недостаточно пафосен",
+            "открыл бы завод по разливу воздуха из Альп",
+            "построил бы личный терминал для перевозки хомяков",
+            "нанимал бы дворецкого, который носит портфель с пустыми чеками",
+            "потерял бы состояние в споре 'орёл-решка'",
+            "заказал бы фонтан из газировки, но батарейки сели"
+        ],
+        "генерал": [
+            "объявил бы войну комарам и проиграл",
+            "его стратегия — атака спросонья с криком 'кофе'",
+            "потерял бы карту местности и захватил соседний огород",
+            "вместо раций использовал бы банки с верёвочкой",
+            "приказал бы армии танцевать вальс для поднятия духа",
+            "наградил бы себя медалью 'за пунктуальность, когда проспал'",
+            "случайно сбросил бы бомбу с мукой для торта"
+        ],
+        "спикер парламента": [
+            "председательствовал бы на заседании, где все говорят шёпотом",
+            "предложил бы закон 'о ежедневной обязательной шутке'",
+            "не мог бы уснуть без дебатов с подушкой",
+            "требовал бы регламент на чихание, иначе штраф",
+            "объявил бы перерыв каждый раз, когда кто-то зевнёт",
+            "разрешил бы брать с собой на трибуну плюшевых зайцев",
+            "сам бы рассказывал анекдоты вместо докладов",
+            "начал бы флиртовать с микрофоном",
+            "предложил бы каждое слово записывать на песке"
+        ]
+    };
+
+    // Доступные профессии (все ключи)
+    const availableProfessions = Object.keys(jokesDatabase);
+
+    // Текущая выбранная профессия
+    let currentProfession = "блогер";
+
+    // -------- рендер кнопок профессий ----------
+    const container = document.getElementById("professionButtonsContainer");
+    function renderProfessionButtons() {
+        container.innerHTML = "";
+        availableProfessions.forEach(prof => {
+            const button = document.createElement("button");
+            button.classList.add("prof-btn");
+            if (prof === currentProfession) button.classList.add("active");
+            // Первая буква заглавная для красоты
+            const displayName = prof.charAt(0).toUpperCase() + prof.slice(1);
+            button.textContent = displayName;
+            button.addEventListener("click", () => {
+                currentProfession = prof;
+                document.querySelectorAll(".prof-btn").forEach(btn => btn.classList.remove("active"));
+                button.classList.add("active");
+                // не генерируем автоматически, чтобы не спамить, только по клику на кнопку генерации
+            });
+            container.appendChild(button);
+        });
+    }
+
+    // Получение 5 случайных уникальных пунктов для профессии (без повторов в рамках вызова)
+    function getRandomUniqueItems(profession, count = 5) {
+        const jokesArray = jokesDatabase[profession];
+        if (!jokesArray || jokesArray.length === 0) {
+            return [
+                "непредвиденная ошибка базы данных",
+                "абсурдность не поддаётся генерации",
+                "попробуйте другую профессию",
+                "этот вариант скрыт во времени",
+                "разработчики не предусмотрели такой расклад"
+            ];
+        }
+        // Создаём копию и тасуем (Fisher-Yates)
+        const shuffled = [...jokesArray];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled.slice(0, count);
+    }
+
+    // Функция экранирования для защиты от XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Основная генерация и отображение
+    function generateAndDisplay() {
+        const rawName = document.getElementById("personName").value;
+        const person = rawName.trim() === "" ? "Кто-то" : rawName.trim();
+        const profession = currentProfession;
+
+        // Получаем 5 пунктов
+        const points = getRandomUniqueItems(profession, 5);
+
+        // Обновляем заголовок
+        const introEl = document.getElementById("introPreview");
+        introEl.innerHTML = `Если бы <span>${escapeHtml(person)}</span> был <span>${escapeHtml(profession.toUpperCase())}</span>, то он бы...`;
+
+        // Обновляем список
+        const pointsList = document.getElementById("pointsList");
+        pointsList.innerHTML = "";
+        for (let point of points) {
+            const li = document.createElement("li");
+            li.textContent = point;
+            pointsList.appendChild(li);
+        }
+
+        // Маленькая визуальная реакция
+        const resultPanel = document.querySelector(".result-panel");
+        resultPanel.style.transform = "scale(0.99)";
+        setTimeout(() => { resultPanel.style.transform = ""; }, 120);
+    }
+
+    // Инициализация интерфейса и стартовый показ
+    renderProfessionButtons();
+    const generateBtn = document.getElementById("generateBtn");
+    generateBtn.addEventListener("click", generateAndDisplay);
+
+    // Для красоты сгенерируем первый пример при загрузке
+    generateAndDisplay();
+</script>
+</body>
+</html>
